@@ -15,12 +15,21 @@
     line-height: 1.7;
   }
 
-  /* 初期画面（真っ白） */
+  /* 初期画面（真っ白＋中央に「設定読込中」） */
   #blank {
     position: fixed;
     inset: 0;
     background: #fff;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #blank .loading {
+    color: #999;          /* 灰色 */
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    user-select: none;
   }
 
   /* ニュース一覧（初期は非表示） */
@@ -60,8 +69,10 @@
 </head>
 <body>
 
-  <!-- 初期の真っ白画面 -->
-  <div id="blank"></div>
+  <!-- 初期の真っ白画面（中央に「設定読込中」） -->
+  <div id="blank">
+    <span class="loading">設定読込中</span>
+  </div>
 
   <!-- ニュース一覧 -->
   <main id="news">
