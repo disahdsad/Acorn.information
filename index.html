@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #fff;
+    color: #222;
+    font-family: -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    line-height: 1.7;
+  }
+
+  /* 初期画面（真っ白） */
+  #blank {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 10;
+  }
+
+  /* ニュース一覧（初期は非表示） */
+  #news {
+    display: none;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  #news h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+  }
+  .item {
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .item .date {
+    font-size: 12px;
+    color: #888;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .item .title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .item .body {
+    font-size: 14px;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 初期の真っ白画面 -->
+  <div id="blank"></div>
+
+  <!-- ニュース一覧 -->
+  <main id="news">
+    <h1>ニュース一覧</h1>
+
+    <article class="item">
+      <span class="date">2026年10月14日</span>
+      <div class="title">新型の小型蓄電池、量産へ</div>
+      <div class="body">国内メーカーが家庭用の小型蓄電池を発表。従来品より約3割軽量化したという。</div>
+    </article>
+
+    <article class="item">
+      <span class="date">2026年10月13日</span>
+      <div class="title">駅前に複合施設がオープン</div>
+      <div class="body">地元の商店や図書館が入った複合施設が開業。初日は多くの人でにぎわった。</div>
+    </article>
+
+    <article class="item">
+      <span class="date">2026年10月12日</span>
+      <div class="title">週末は各地で秋祭り</div>
+      <div class="body">今週末は各地で秋祭りが予定されている。天気はおおむね晴れの見込み。</div>
+    </article>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ===== Ctrl+D でニュース一覧へ =====
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && (e.key === 'd' || e.key === 'D')) {
+      e.preventDefault();
+      document.getElementById('blank').style.display = 'none';
+      document.getElementById('news').style.display = 'block';
+    }
+  });
+
+  // ===== about:blank に遷移する関数 =====
+  function goBlank() {
+    window.location.replace('about:blank');
+  }
+
+  // ===== 1. 右クリック（コンテキストメニュー）の無効化 =====
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    goBlank();
+  });
+
+  // ===== 2. ショートカットキーの検出 =====
+  document.addEventListener('keydown', function (e) {
+    var key = e.keyCode;
+
+    // F12
+    // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C（検証ツール関連）
+    // Ctrl+U（ソース表示）
+    if (key === 123 ||
+        (e.ctrlKey && e.shiftKey && (key === 73 || key === 74 || key === 67)) ||
+        (e.ctrlKey && key === 85)) {
+      e.preventDefault();
+      goBlank();
+    }
+  });
+
+  // ===== 3. DevTools の開閉検出（サイズ差を利用） =====
+  var devtools = { open: false, threshold: 170 };
+  var lastWidth = window.outerWidth - window.innerWidth;
+  var lastHeight = window.outerHeight - window.innerHeight;
+
+  setInterval(function () {
+    var widthDiff = window.outerWidth - window.innerWidth;
+    var heightDiff = window.outerHeight - window.innerHeight;
+    if (((widthDiff - lastWidth) > devtools.threshold || (heightDiff - lastHeight) > devtools.threshold)
+        && !devtools.open) {
+      devtools.open = true;
+      goBlank();
+    } else if (widthDiff < devtools.threshold && heightDiff < devtools.threshold) {
+      devtools.open = false;
+    }
+    lastWidth = widthDiff;
+    lastHeight = heightDiff;
+  }, 500);
+
+  // ===== 4. debugger 命令による検出（コンソールを開いていると停止する） =====
+  setInterval(function () {
+    var start = Date.now();
+    debugger; // DevTools が開いているとここで一時停止する
+    if (Date.now() - start > 200) {
+      goBlank();
+    }
+  }, 1000);
+})();
+</script>
+
+</body>
+</html>
